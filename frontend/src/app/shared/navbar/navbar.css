@@ -1,0 +1,41 @@
+/* Navbar styles */
+.navbar {
+  padding: 15px 0;
+}
+
+
+.navbar-nav .nav-link {
+  transition: all 0.3s ease;
+  margin: 0 10px;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #D4A373 !important;
+  transform: translateY(-2px);
+}
+
+/* Style de la barre de recherche */
+.form-control:focus {
+  border-color: #D4A373;
+  box-shadow: 0 0 5px rgba(212, 163, 115, 0.5);
+}
+
+.btn:hover {
+  background-color: #B8860B !important;
+  transform: scale(1.05);
+}
+
+/* Style des icônes */
+.nav-link {
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+  transform: translateY(-2px);
+}
+
+/* Badge panier */
+.badge {
+  padding: 3px 6px;
+}

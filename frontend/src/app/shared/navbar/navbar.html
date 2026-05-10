@@ -1,0 +1,156 @@
+<nav class="navbar navbar-expand-lg" style="background-color: #F5E6D3; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+  <div class="container">
+    
+    <!-- LOGO H&D Elegance -->
+    <a class="navbar-brand d-flex align-items-center" routerLink="/catalog" style="text-decoration: none;">
+      <div style="background: linear-gradient(145deg, #F5E6D3, #E8D5B7); width: 60px; height: 60px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-right: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 2px solid white;">
+        <span style="color: #8B5E3C; font-weight: 800; font-size: 18px; letter-spacing: 0.5px;">H&D</span>
+        <span style="color: #D4A373; font-size: 7px; letter-spacing: 1.5px; font-weight: 500;">ELEGANCE</span>
+      </div>
+      <div>
+        <div style="font-family: 'Playfair Display', 'Georgia', serif; background: linear-gradient(135deg, #8B5E3C, #D4A373); background-clip: text; -webkit-background-clip: text; color: transparent; font-size: 1.6rem; font-weight: 700; letter-spacing: 1px;">
+          H&D Elegance
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 4px;">
+          <span style="color: #D4A373; font-size: 0.65rem; letter-spacing: 2px;">✦ BAGS ✦</span>
+          <span style="color: #D4A373; font-size: 0.65rem; letter-spacing: 2px;">DRESSES ✦</span>
+          <span style="color: #D4A373; font-size: 0.65rem; letter-spacing: 2px;">HEELS ✦</span>
+        </div>
+        <div style="color: #C9A87C; font-size: 0.55rem; letter-spacing: 2.5px; margin-top: 2px;">
+          ELEGANCE FOR EVERY WOMAN
+        </div>
+      </div>
+    </a>
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item"><a class="nav-link" routerLink="/catalog" style="color: #8B5E3C; font-weight: 500; margin: 0 12px;">🏠 Accueil</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/profile" style="color: #8B5E3C; font-weight: 500; margin: 0 12px;">👤 Profil</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/orders" style="color: #8B5E3C; font-weight: 500; margin: 0 12px;">📦 Commandes</a></li>
+      </ul>
+      
+      <!-- Barre de recherche avec suggestions -->
+      <div class="d-flex me-3 position-relative">
+        <div class="input-group" style="width: 250px;">
+          <input type="text" class="form-control" placeholder="🔍 Rechercher un produit..." 
+                 style="border-radius: 30px 0 0 30px; border: 1px solid #D4A373;"
+                 [(ngModel)]="searchTerm" (input)="onSearchInput()" (keyup.enter)="searchProducts()">
+          <button class="btn" style="background-color: #D4A373; color: white; border-radius: 0 30px 30px 0;" (click)="searchProducts()">
+            🔍
+          </button>
+        </div>
+        
+        <!-- Suggestions de recherche -->
+        <div *ngIf="showSuggestions && suggestions.length > 0" class="suggestions-dropdown">
+          <div *ngFor="let suggestion of suggestions" class="suggestion-item" (click)="selectSuggestion(suggestion)">
+            <span class="suggestion-icon">{{ getIconForCategory(suggestion.category) }}</span>
+            <span class="suggestion-name">{{ suggestion.name }}</span>
+            <span class="suggestion-price">{{ suggestion.price }} DH</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Panier et Connexion -->
+      <div class="d-flex gap-3 align-items-center">
+        <a routerLink="/cart" style="color: #8B5E3C; text-decoration: none; position: relative;">
+          🛒
+          <span class="cart-badge" style="position: absolute; top: -8px; right: -12px; background: #FF69B4; color: white; border-radius: 50%; padding: 2px 6px; font-size: 9px;">
+            {{ cartTotalItems }}
+          </span>
+        </a>
+        
+        <div *ngIf="!isLoggedIn">
+          <a routerLink="/login" class="btn btn-sm" style="background: linear-gradient(135deg, #D4A373, #8B5E3C); color: white; padding: 6px 20px; border-radius: 30px; text-decoration: none;">
+            👤 Connexion
+          </a>
+        </div>
+        
+        <div *ngIf="isLoggedIn" class="dropdown">
+          <button class="btn btn-sm dropdown-toggle" style="background: linear-gradient(135deg, #D4A373, #8B5E3C); color: white; border-radius: 30px; padding: 6px 15px;" data-bs-toggle="dropdown">
+            👤 {{ userName }}
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/profile">👤 Mon profil</a></li>
+            <li><a class="dropdown-item" routerLink="/orders">📦 Mes commandes</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" (click)="logout()">🚪 Déconnexion</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<style>
+  .nav-link {
+    transition: all 0.3s ease;
+  }
+  .nav-link:hover {
+    color: #FF69B4 !important;
+    transform: translateY(-2px);
+  }
+  .dropdown-menu {
+    background-color: #FFF5F0;
+    border: 1px solid #D4A373;
+  }
+  .dropdown-item:hover {
+    background-color: #F5E6D3;
+    color: #FF69B4;
+  }
+  .cart-badge {
+    transition: all 0.3s ease;
+  }
+  input:focus {
+    box-shadow: none;
+    border-color: #FF69B4;
+  }
+  
+  /* Suggestions dropdown */
+  .suggestions-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #D4A373;
+    border-radius: 15px;
+    margin-top: 5px;
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  .suggestion-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 1px solid #F5E6D3;
+  }
+  
+  .suggestion-item:hover {
+    background-color: #FFF5F0;
+  }
+  
+  .suggestion-icon {
+    font-size: 24px;
+    margin-right: 12px;
+  }
+  
+  .suggestion-name {
+    flex: 1;
+    color: #8B5E3C;
+    font-weight: 500;
+  }
+  
+  .suggestion-price {
+    color: #FF69B4;
+    font-weight: bold;
+  }
+</style>

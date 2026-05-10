@@ -1,0 +1,141 @@
+<div class="container py-5" style="min-height: 60vh;">
+  <h2 class="mb-4" style="color: #8B5E3C;">
+    📦 Mes Commandes
+    <span style="font-size: 14px; color: #D4A373;">({{ orders.length }} commandes)</span>
+  </h2>
+  
+  <!-- Message si aucune commande -->
+  <div *ngIf="orders.length === 0" class="text-center py-5">
+    <span style="font-size: 64px;">🛍️</span>
+    <h4 class="mt-3" style="color: #D4A373;">Vous n'avez pas encore de commandes</h4>
+    <p>Commencez vos achats dès maintenant !</p>
+    <button class="btn" style="background-color: #D4A373; color: white;" routerLink="/catalog">
+      🛒 Découvrir nos produits
+    </button>
+  </div>
+  
+  <!-- Liste dynamique des commandes -->
+  <div *ngFor="let order of orders; let i = index" class="card mb-4">
+    <div class="card-header" style="background-color: #F5E6D3;">
+      <div class="row">
+        <div class="col-md-3">
+          <strong>Commande #{{ order.orderNumber || 'HD-' + (i+1).toString().padStart(3, '0') }}</strong>
+        </div>
+        <div class="col-md-3">
+          📅 {{ order.date | date:'dd MMMM yyyy' }}
+        </div>
+        <div class="col-md-3">
+          <span class="badge" [style.backgroundColor]="order.status === 'livrée' ? '#28a745' : '#ffc107'" 
+                [style.color]="order.status === 'livrée' ? 'white' : '#333'">
+            {{ order.status === 'livrée' ? '✅ Livrée' : '🚚 En cours' }}
+          </span>
+        </div>
+        <div class="col-md-3">
+          <strong>Total : {{ order.total }} DH</strong>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-sm">
+          <thead>
+            <tr style="color: #8B5E3C;">
+              <th>Produit</th>
+              <th>Quantité</th>
+              <th>Prix unitaire</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of order.items">
+              <td>
+                <span *ngIf="item.category === 'Robe'">👗</span>
+                <span *ngIf="item.category === 'Sac'">👜</span>
+                <span *ngIf="item.category === 'Talon'">👠</span>
+                {{ item.name }}
+              </td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.price }} DH</td>
+              <td>{{ item.price * item.quantity }} DH</td>
+            </tr>
+            <tr class="fw-bold">
+              <td colspan="3" class="text-end">Total :</td>
+              <td>{{ order.total }} DH</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="btn btn-sm" style="background-color: #D4A373; color: white;" (click)="viewOrderDetail(order)">
+        📄 Voir détails
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Détails commande -->
+<div class="modal fade" id="orderDetailModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: #D4A373; color: white;">
+        <h5 class="modal-title">📄 Détails de la commande #{{ selectedOrder?.orderNumber }}</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <strong>Date :</strong> {{ selectedOrder?.date | date:'dd/MM/yyyy' }}
+          </div>
+          <div class="col-md-6">
+            <strong>Statut :</strong> 
+            <span class="badge" [style.backgroundColor]="selectedOrder?.status === 'livrée' ? '#28a745' : '#ffc107'">
+              {{ selectedOrder?.status === 'livrée' ? 'Livrée' : 'En cours' }}
+            </span>
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-12">
+            <strong>Adresse de livraison :</strong><br>
+            {{ selectedOrder?.address }}, {{ selectedOrder?.city }} {{ selectedOrder?.zipCode }}
+          </div>
+        </div>
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <strong>Nom :</strong> {{ selectedOrder?.fullName }}
+          </div>
+          <div class="col-md-6">
+            <strong>Téléphone :</strong> {{ selectedOrder?.phone }}
+          </div>
+        </div>
+        <hr>
+        <h6>Produits commandés :</h6>
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>Produit</th>
+              <th>Quantité</th>
+              <th>Prix unitaire</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of selectedOrder?.items">
+              <td>{{ item.name }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.price }} DH</td>
+              <td>{{ item.price * item.quantity }} DH</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="fw-bold">
+              <td colspan="3" class="text-end">Total :</td>
+              <td>{{ selectedOrder?.total }} DH</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+      </div>
+    </div>
+  </div>
+</div>

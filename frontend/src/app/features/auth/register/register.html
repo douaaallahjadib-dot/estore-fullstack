@@ -1,0 +1,83 @@
+<div class="container py-5" style="min-height: 80vh;">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      
+      <div class="card shadow-sm border-0" style="border-radius: 20px;">
+        
+        <!-- En-tête -->
+        <div class="card-header text-center py-4" style="background: linear-gradient(135deg, #FFB6C1, #F5E6D3); border-radius: 20px 20px 0 0;">
+          <span style="font-size: 48px;">📝</span>
+          <h2 style="color: #8B5E3C; margin-top: 10px;">Créer un compte</h2>
+          <p class="text-muted">Rejoignez H&D Elegance</p>
+        </div>
+        
+        <!-- Corps du formulaire -->
+        <div class="card-body p-4">
+          
+          <!-- Message d'erreur -->
+          <div *ngIf="errorMessage" class="alert alert-danger">
+            {{ errorMessage }}
+          </div>
+          
+          <!-- Message de succès -->
+          <div *ngIf="successMessage" class="alert alert-success">
+            {{ successMessage }}
+          </div>
+          
+          <!-- Formulaire -->
+          <form (ngSubmit)="onSubmit()">
+            
+            <!-- Nom complet -->
+            <div class="mb-3">
+              <label class="form-label">👤 Nom complet</label>
+              <input type="text" class="form-control" [(ngModel)]="user.nom" name="nom" 
+                     placeholder="Votre nom et prénom" required
+                     style="border-radius: 10px; border: 1px solid #D4A373;">
+            </div>
+            
+            <!-- Email -->
+            <div class="mb-3">
+              <label class="form-label">📧 Email</label>
+              <input type="email" class="form-control" [(ngModel)]="user.email" name="email" 
+                     placeholder="exemple@email.com" required
+                     style="border-radius: 10px; border: 1px solid #D4A373;">
+            </div>
+            
+            <!-- Mot de passe -->
+            <div class="mb-3">
+              <label class="form-label">🔒 Mot de passe</label>
+              <input type="password" class="form-control" [(ngModel)]="user.password" name="password" 
+                     placeholder="••••••••" required
+                     style="border-radius: 10px; border: 1px solid #D4A373;">
+            </div>
+            
+            <!-- Confirmation mot de passe -->
+            <div class="mb-4">
+              <label class="form-label">🔒 Confirmer le mot de passe</label>
+              <input type="password" class="form-control" [(ngModel)]="confirmPassword" name="confirmPassword" 
+                     placeholder="••••••••" required
+                     style="border-radius: 10px; border: 1px solid #D4A373;">
+            </div>
+            
+            <!-- Bouton inscription -->
+            <button type="submit" class="btn w-100 py-2" [disabled]="isLoading"
+                    style="background: linear-gradient(135deg, #FF69B4, #D4A373); color: white; border-radius: 30px; font-weight: bold;">
+              {{ isLoading ? '⏳ Inscription en cours...' : '✅ S\'inscrire' }}
+            </button>
+            
+          </form>
+          
+          <!-- Lien vers connexion -->
+          <div class="text-center mt-4">
+            <p class="text-muted">Déjà un compte ?</p>
+            <a routerLink="/login" class="btn btn-outline-secondary w-100" style="border-radius: 30px;">
+              🔑 Se connecter
+            </a>
+          </div>
+          
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>

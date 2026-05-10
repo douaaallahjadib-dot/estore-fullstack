@@ -1,0 +1,302 @@
+<div class="container py-5">
+  
+  <!-- Bannière Summer Breeze -->
+  <div class="collection-banner text-center py-5 mb-5" style="background: transparent; border-radius: 20px;">
+    <h2 style="color: #A88B6B; font-family: 'Playfair Display', serif; font-size: 2.5rem; letter-spacing: 2px;">SUMMER BREEZE 2026</h2>
+    <p style="color: #C9A87C; font-size: 1.1rem; font-weight: 500;">Édition capsule - Inspiration Méditerranée</p>
+  </div>
+
+  <!-- Texte accueil -->
+  <div class="welcome-section text-center mb-5">
+    <h2 style="color: #8B5E3C;">Bienvenue chez H&D Elegance</h2>
+    <p style="color: #8B5E3C; max-width: 700px; margin: 0 auto;">
+      Découvrez notre collection capsule "Summer Breeze 2026". 
+      Des pièces uniques inspirées par la douceur méditerranéenne.
+    </p>
+  </div>
+  
+  <!-- Livraison gratuite -->
+  <div class="delivery-banner mb-4" *ngIf="getTotalCartPrice() < 500">
+    <div class="alert" style="background: linear-gradient(135deg, #FFF5F0, #F5E6D3); border: 2px dashed #D4A373; border-radius: 15px;">
+      <div class="row align-items-center">
+        <div class="col-md-2 text-center"><span style="font-size: 35px;">🚚</span></div>
+        <div class="col-md-7">
+          <strong style="color: #8B5E3C;">Plus que {{ 500 - getTotalCartPrice() }} DH pour la livraison gratuite !</strong>
+          <p class="mb-0 small text-muted">Ajoutez des produits pour bénéficier de la livraison offerte.</p>
+        </div>
+        <div class="col-md-3 text-center">
+          <div class="progress" style="height: 10px; border-radius: 10px;">
+            <div class="progress-bar" role="progressbar" 
+                 [style.width]="(getTotalCartPrice() / 500) * 100 + '%'" 
+                 style="background-color: #FF69B4; border-radius: 10px;"></div>
+          </div>
+          <small class="text-muted">{{ (getTotalCartPrice() / 500) * 100 | number:'1.0-0' }}%</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="delivery-banner-success mb-4" *ngIf="getTotalCartPrice() >= 500">
+    <div class="alert" style="background: linear-gradient(135deg, #C5E99B, #A8D672); border: 2px solid #2E8B57; border-radius: 15px;">
+      <div class="row align-items-center">
+        <div class="col-md-2 text-center"><span style="font-size: 35px;">🎉</span></div>
+        <div class="col-md-10">
+          <strong style="color: #2E8B57;">✅ Livraison GRATUITE !</strong>
+          <p class="mb-0 small">Votre commande bénéficie de la livraison offerte.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Barre de recherche -->
+  <div class="row mb-4">
+    <div class="col-md-6 mx-auto">
+      <input type="text" class="form-control" placeholder="🔍 Rechercher un produit..." 
+             style="border-radius: 50px; padding: 12px 20px; border: 1px solid #D4A373;"
+             [(ngModel)]="searchTerm" (input)="searchProducts()">
+    </div>
+  </div>
+  
+  <!-- Boutons de filtre -->
+  <div class="row mb-4">
+    <div class="col-md-8 mx-auto">
+      <div class="d-flex justify-content-center gap-3 flex-wrap">
+        <button class="btn btn-filter" [class.active]="selectedFilter === 'all'" (click)="filterProducts('all')">🌸 Tous</button>
+        <button class="btn btn-filter" [class.active]="selectedFilter === 'Robe'" (click)="filterProducts('Robe')">👗 Robes</button>
+        <button class="btn btn-filter" [class.active]="selectedFilter === 'Sac'" (click)="filterProducts('Sac')">👜 Sacs</button>
+        <button class="btn btn-filter" [class.active]="selectedFilter === 'Talon'" (click)="filterProducts('Talon')">👠 Talons</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- ROBES -->
+  <h2 class="mb-4 pb-2" style="color: #D4A373; border-bottom: 2px solid #FFB6C1;" *ngIf="selectedFilter === 'all' || selectedFilter === 'Robe'">
+    👗 Robes d'Été ({{ getProductsByCategory('Robe').length }})
+  </h2>
+  <div class="row mb-5">
+    <div class="col-md-4 mb-4" *ngFor="let product of getProductsByCategory('Robe')">
+      <div class="card h-100 shadow-sm product-card">
+        <img [src]="product.images[0]" class="card-img-top" [alt]="product.name" 
+             style="height: 350px; width: 100%; object-fit: cover; cursor: pointer;"
+             (click)="openModal(product)"
+             onerror="this.src='https://placehold.co/400x500/FFB6C1/white?text=Robe'">
+        <div class="card-body text-center">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <p class="card-text text-muted">{{ product.description.substring(0, 60) }}...</p>
+          <p class="fs-3 fw-bold" style="color: #FF69B4;">{{ product.price }} DH</p>
+          <div class="rating-section mb-2">
+            <div class="d-flex justify-content-center gap-1">
+              <span *ngFor="let s of [1,2,3,4,5]" (click)="rateProduct(product, s)" 
+                    style="cursor: pointer; font-size: 24px;"
+                    [style.color]="s <= product.rating ? '#FFD700' : '#ddd'">★</span>
+            </div>
+            <small class="text-muted">{{ product.totalReviews || 0 }} avis</small>
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn w-100 add-to-cart" style="background-color: #D4A373; color: white;" (click)="addToCart(product)">
+              🛒 Ajouter
+            </button>
+            <button class="btn btn-outline-secondary" (click)="openModal(product)">
+              📋 Détails
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- SACS -->
+  <h2 class="mb-4 pb-2" style="color: #D4A373; border-bottom: 2px solid #FFB6C1;" *ngIf="selectedFilter === 'all' || selectedFilter === 'Sac'">
+    👜 Sacs à Main ({{ getProductsByCategory('Sac').length }})
+  </h2>
+  <div class="row mb-5">
+    <div class="col-md-4 mb-4" *ngFor="let product of getProductsByCategory('Sac')">
+      <div class="card h-100 shadow-sm product-card">
+        <img [src]="product.images[0]" class="card-img-top" [alt]="product.name" 
+             style="height: 350px; width: 100%; object-fit: cover; cursor: pointer;"
+             (click)="openModal(product)"
+             onerror="this.src='https://placehold.co/400x500/F5E6D3/8B5E3C?text=Sac'">
+        <div class="card-body text-center">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <p class="card-text text-muted">{{ product.description.substring(0, 60) }}...</p>
+          <p class="fs-3 fw-bold" style="color: #FF69B4;">{{ product.price }} DH</p>
+          <div class="rating-section mb-2">
+            <div class="d-flex justify-content-center gap-1">
+              <span *ngFor="let s of [1,2,3,4,5]" (click)="rateProduct(product, s)" 
+                    style="cursor: pointer; font-size: 24px;"
+                    [style.color]="s <= product.rating ? '#FFD700' : '#ddd'">★</span>
+            </div>
+            <small class="text-muted">{{ product.totalReviews || 0 }} avis</small>
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn w-100 add-to-cart" style="background-color: #D4A373; color: white;" (click)="addToCart(product)">
+              🛒 Ajouter
+            </button>
+            <button class="btn btn-outline-secondary" (click)="openModal(product)">
+              📋 Détails
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- TALONS -->
+  <h2 class="mb-4 pb-2" style="color: #D4A373; border-bottom: 2px solid #FFB6C1;" *ngIf="selectedFilter === 'all' || selectedFilter === 'Talon'">
+    👠 Talons ({{ getProductsByCategory('Talon').length }})
+  </h2>
+  <div class="row mb-5">
+    <div class="col-md-4 mb-4" *ngFor="let product of getProductsByCategory('Talon')">
+      <div class="card h-100 shadow-sm product-card">
+        <img [src]="product.images[0]" class="card-img-top" [alt]="product.name" 
+             style="height: 350px; width: 100%; object-fit: cover; cursor: pointer;"
+             (click)="openModal(product)"
+             onerror="this.src='https://placehold.co/400x500/FFB6C1/white?text=Talon'">
+        <div class="card-body text-center">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <p class="card-text text-muted">{{ product.description.substring(0, 60) }}...</p>
+          <p class="fs-3 fw-bold" style="color: #FF69B4;">{{ product.price }} DH</p>
+          <div class="rating-section mb-2">
+            <div class="d-flex justify-content-center gap-1">
+              <span *ngFor="let s of [1,2,3,4,5]" (click)="rateProduct(product, s)" 
+                    style="cursor: pointer; font-size: 24px;"
+                    [style.color]="s <= product.rating ? '#FFD700' : '#ddd'">★</span>
+            </div>
+            <small class="text-muted">{{ product.totalReviews || 0 }} avis</small>
+          </div>
+          <div class="d-flex gap-2">
+            <button class="btn w-100 add-to-cart" style="background-color: #D4A373; color: white;" (click)="addToCart(product)">
+              🛒 Ajouter
+            </button>
+            <button class="btn btn-outline-secondary" (click)="openModal(product)">
+              📋 Détails
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALE (sans Bootstrap JS, 100% fonctionnelle) -->
+<div id="productModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center;">
+  <div style="background: white; width: 85%; max-width: 900px; border-radius: 20px; max-height: 85vh; overflow-y: auto;">
+    
+    <!-- En-tête -->
+    <div style="background: linear-gradient(135deg, #D4A373, #8B5E3C); padding: 20px; border-radius: 20px 20px 0 0; display: flex; justify-content: space-between; align-items: center;">
+      <h3 style="color: white; margin: 0;">✨ Détails du produit ✨</h3>
+      <button (click)="closeModal()" style="background: none; border: none; color: white; font-size: 28px; cursor: pointer;">&times;</button>
+    </div>
+    
+    <!-- Corps -->
+    <div style="padding: 25px;">
+      <div class="row">
+        <div class="col-md-6">
+          <img [src]="selectedProduct?.images[0]" style="width: 100%; border-radius: 15px; object-fit: cover;"
+               onerror="this.src='https://placehold.co/400x500/F5E6D3/8B5E3C?text=Image'">
+        </div>
+        <div class="col-md-6">
+          <h2 style="color: #8B5E3C;">{{ selectedProduct?.name }}</h2>
+          <p class="text-muted">{{ selectedProduct?.description }}</p>
+          <hr>
+          <p><strong>🎨 Couleur :</strong> {{ selectedProduct?.color }}</p>
+          <p><strong>💰 Prix :</strong> <span style="color: #FF69B4; font-size: 1.8rem;">{{ selectedProduct?.price }} DH</span></p>
+          <p><strong>📦 Stock :</strong> {{ selectedProduct?.stock }} disponibles</p>
+          <p><strong>⭐ Note :</strong> {{ selectedProduct?.rating || 0 }}/5 ({{ selectedProduct?.totalReviews || 0 }} avis)</p>
+          
+          <hr>
+          
+          <!-- SECTION AVIS -->
+          <h5 style="color: #8B5E3C;">⭐ Avis clients</h5>
+          
+          <div style="background-color: #FFF5F0; padding: 15px; border-radius: 15px; margin-bottom: 15px;">
+            <div class="mb-2">
+              <select [(ngModel)]="newReview.rating" class="form-select form-select-sm" style="width: auto; display: inline-block;">
+                <option value="5">⭐⭐⭐⭐⭐ - Excellent</option>
+                <option value="4">⭐⭐⭐⭐ - Très bien</option>
+                <option value="3">⭐⭐⭐ - Bien</option>
+                <option value="2">⭐⭐ - Moyen</option>
+                <option value="1">⭐ - Déçu</option>
+              </select>
+            </div>
+            <textarea [(ngModel)]="newReview.comment" class="form-control" rows="2" placeholder="Votre commentaire..."></textarea>
+            <button class="btn btn-sm mt-2" style="background-color: #D4A373; color: white;" (click)="addReview()">
+              📤 Publier l'avis
+            </button>
+          </div>
+          
+          <div *ngIf="selectedProduct?.reviews?.length === 0" class="text-muted small">
+            Soyez le premier à donner votre avis !
+          </div>
+          
+          <div *ngFor="let review of selectedProduct?.reviews" style="border-bottom: 1px solid #F5E6D3; padding: 10px 0;">
+            <div class="d-flex justify-content-between">
+              <strong>{{ review.userName }}</strong>
+              <span class="text-warning">{{ getStars(review.rating) }}</span>
+            </div>
+            <p class="mb-1 small">{{ review.comment }}</p>
+            <small class="text-muted">{{ review.date | date:'dd/MM/yyyy' }}</small>
+          </div>
+          
+          <hr>
+          
+          <button class="btn w-100" style="background: linear-gradient(135deg, #FF69B4, #D4A373); color: white; padding: 12px;" (click)="addToCart(selectedProduct); closeModal()">
+            🛒 Ajouter au panier
+          </button>
+          <button class="btn w-100 mt-2" style="background-color: #F5E6D3; color: #8B5E3C;" (click)="closeModal()">
+            Fermer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .product-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+  .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  }
+  
+  .add-to-cart {
+    transition: all 0.3s ease;
+  }
+  .add-to-cart:hover {
+    background-color: #FF69B4 !important;
+    transform: scale(1.02);
+  }
+  
+  .btn-outline-secondary:hover {
+    background-color: #8B5E3C;
+    color: white;
+    border-color: #8B5E3C;
+  }
+  
+  .rating-section span {
+    transition: transform 0.2s;
+  }
+  .rating-section span:hover {
+    transform: scale(1.1);
+  }
+  
+  .btn-filter {
+    background-color: #F5E6D3;
+    color: #8B5E3C;
+    border: 1px solid #D4A373;
+    transition: all 0.3s ease;
+  }
+  .btn-filter:hover {
+    background-color: #D4A373;
+    color: white;
+    transform: translateY(-2px);
+  }
+  .btn-filter.active {
+    background: linear-gradient(135deg, #FF69B4, #D4A373);
+    color: white;
+    border: none;
+  }
+</style>

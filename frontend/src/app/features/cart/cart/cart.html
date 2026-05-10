@@ -1,0 +1,106 @@
+<div class="container py-5" style="min-height: 60vh;">
+  <h2 class="mb-4" style="color: #8B5E3C;">
+    🛒 Mon Panier 
+    <span style="font-size: 14px; color: #D4A373;">({{ cartItems.length }} articles)</span>
+  </h2>
+  <a routerLink="/catalog" style="text-decoration: none;">← Retour au catalogue</a>
+  
+  <div *ngIf="cartItems.length === 0" class="text-center py-5">
+    <div style="font-size: 80px;">🛍️</div>
+    <h4 class="mt-3" style="color: #D4A373;">Votre panier est vide</h4>
+    <button class="btn mt-3" style="background-color: #D4A373; color: white;" routerLink="/catalog">
+      🛍️ Découvrir nos produits
+    </button>
+  </div>
+  
+  <div *ngIf="cartItems.length > 0" class="row">
+    <div class="col-md-8">
+      <!-- Liste des produits dynamique -->
+      <div class="card mb-3" *ngFor="let item of cartItems; let i = index">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-md-2 text-center">
+              <span style="font-size: 40px;">{{ getIcon(item.category) }}</span>
+            </div>
+            <div class="col-md-4">
+              <h5 class="mb-1">{{ item.name }}</h5>
+              <p class="text-muted mb-0 small">Référence: {{ item.id }}</p>
+            </div>
+            <div class="col-md-2">
+              <span class="fw-bold">{{ item.price }} DH</span>
+            </div>
+            <div class="col-md-2">
+              <input type="number" [(ngModel)]="item.quantity" 
+                     (change)="updateQuantity(item.id, item.quantity)" 
+                     min="1" class="form-control form-control-sm" style="width: 70px;">
+            </div>
+            <div class="col-md-2 text-center">
+              <button class="btn btn-sm" style="color: #FF69B4;" (click)="removeItem(item.id)">
+                🗑️ Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Bouton vider le panier -->
+      <button class="btn btn-danger btn-sm mt-2" (click)="clearCart()" *ngIf="cartItems.length > 0">
+        🗑️ Vider le panier
+      </button>
+    </div>
+    
+    <div class="col-md-4">
+      <!-- Résumé de la commande -->
+      <div class="card" style="background-color: #FFF5F0;">
+        <div class="card-header" style="background-color: #D4A373; color: white;">
+          <h5 class="mb-0">📋 Résumé de la commande</h5>
+        </div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between mb-2">
+            <span>Sous-total ({{ getTotalItems() }} articles) :</span>
+            <span class="fw-bold">{{ getTotalPrice() }} DH</span>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span>Livraison :</span>
+            <span class="fw-bold text-success">Gratuite</span>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between mb-3">
+            <span class="fs-5 fw-bold">Total :</span>
+            <span class="fs-4 fw-bold" style="color: #FF69B4;">{{ getTotalPrice() }} DH</span>
+          </div>
+          <button class="btn w-100" style="background: linear-gradient(135deg, #FF69B4, #D4A373); color: white; padding: 12px;" routerLink="/checkout">
+            ✅ Valider la commande
+          </button>
+          <button class="btn w-100 mt-2" style="background-color: #F5E6D3; color: #8B5E3C;" routerLink="/catalog">
+            🛍️ Continuer mes achats
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .card {
+    transition: transform 0.3s ease;
+  }
+  .card:hover {
+    transform: translateX(5px);
+  }
+  .btn-sm {
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .btn-sm:hover {
+    transform: scale(1.05);
+  }
+  .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+  }
+  .btn-danger:hover {
+    background-color: #c82333;
+  }
+</style>
